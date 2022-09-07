@@ -25,9 +25,17 @@ const server = http.createServer(function(req, res) {
 				res.end();
 			}
 		} else {
-			res.writeHead(200);
-			res.write("Staying alive...");
-			res.end();
+			if (req.url == "/stop"){
+				res.writeHead(200);
+				res.write("Stopping...");
+				res.end();
+				console.log("Stopping upon request....");
+				process.exit(0);
+			} else {
+				res.writeHead(200);
+				res.write("Staying alive...");
+				res.end();
+			}
 		}
 	})
 }).listen(8080);
