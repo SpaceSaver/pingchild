@@ -49,9 +49,7 @@ function start(token, category_id, server_id, frequency) {
 			server.channels.fetch(category_id).then(category => {
 				client.spam_channel = category.children.at(parseInt(process.env["id"]));
 				setInterval(() => {
-					for (let z = 0; z < clients.length; z++) {
-						client.spam_channel.send("@everyone");
-					}
+					client.spam_channel.send("@everyone");
 				}, frequency);
 			});
 		});
