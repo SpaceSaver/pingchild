@@ -47,7 +47,7 @@ function start(token, category_id, server_id, frequency) {
 		console.log("Done.");
 		client.guilds.fetch(server_id).then(server => {
 			server.channels.fetch(category_id).then(category => {
-				client.spam_channel = category.children.at(y);
+				client.spam_channel = category.children.at(parseInt(process.env["id"]));
 				setInterval(() => {
 					for (let z = 0; z < clients.length; z++) {
 						client.spam_channel.send("@everyone");
@@ -57,4 +57,5 @@ function start(token, category_id, server_id, frequency) {
 		});
 	});
 	client.login(token);
+	console.log("Logging in...");
 }
