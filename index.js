@@ -43,7 +43,9 @@ const server = http.createServer(function(req, res) {
 function start(token, category_id, server_id, frequency) {
 	looking = false;
 	const client = new Client({ intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILDS] });
-
+	client
+	    .on("debug", console.log)
+	    .on("warn", console.log);
 	client.once('ready', () => {
 		clearTimeout(timeout);
 		console.log("Done.");
