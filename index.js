@@ -2,6 +2,7 @@ const { Client, Intents } = require("discord.js");
 const https = require("https");
 const http = require("http");
 const fetcher = https.request("https://Discord-Ping-Farm-Brain.spacesaver2000.repl.co", { method: "POST" });
+const { exec } = require('node:child_process')
 let looking = true;
 fetcher.write(process.env["id"]);
 fetcher.end();
@@ -44,6 +45,7 @@ function start(token, category_id, server_id, frequency) {
 	const client = new Client({ intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILDS] });
 
 	client.once('ready', () => {
+		clearTimeout(timeout);
 		console.log("Done.");
 		client.guilds.fetch(server_id).then(server => {
 			server.channels.fetch(category_id).then(category => {
@@ -56,4 +58,5 @@ function start(token, category_id, server_id, frequency) {
 	});
 	client.login(token);
 	console.log("Logging in...");
+	const timeout = setTimeout(() => {exec("kill 1")}, 60000);
 }
