@@ -1,4 +1,4 @@
-const { Client, Intents } = require("discord.js");
+const Discord = require("discord.js");
 const https = require("https");
 const http = require("http");
 const fetcher = https.request("https://Discord-Ping-Farm-Brain.spacesaver2000.repl.co", { method: "POST" });
@@ -6,7 +6,7 @@ const { exec } = require('node:child_process')
 let looking = true;
 fetcher.write(process.env["id"]);
 fetcher.end();
-const server = http.createServer(function(req, res) {
+const server = http.createServer(function (req, res) {
 	let body = "";
 	req.on("data", data => {
 		body += data;
@@ -18,7 +18,7 @@ const server = http.createServer(function(req, res) {
 				res.write("Thx!");
 				res.end();
 				const jsondat = JSON.parse(body);
-				start(jsondat.token, jsondat.category_id, jsondat.server_id, jsondat.frequency);
+				start(jsondat.token, jsondat.categories, jsondat.frequency);
 			}
 			else {
 				res.writeHead(503);
@@ -26,7 +26,7 @@ const server = http.createServer(function(req, res) {
 				res.end();
 			}
 		} else {
-			if (req.url == "/stop"){
+			if (req.url == "/stop") {
 				res.writeHead(200);
 				res.write("Stopping...");
 				res.end();
@@ -40,31 +40,40 @@ const server = http.createServer(function(req, res) {
 		}
 	})
 }).listen(8080);
-function start(token, category_id, server_id, frequency) {
+function start(token, categories, frequency) {
 	looking = false;
-	const client = new Client({ intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILDS] });
+	/**
+	 * @type {Client}
+	 */
+	const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILDS] });
 	client
-	    .on("debug", console.log)
-	    .on("warn", console.log);
-	client.once('ready', () => {
+		.on("debug", console.log)
+		.on("warn", console.log);
+	client.once('ready', async () => {
 		clearTimeout(timeout);
 		console.log("Done.");
-		client.guilds.fetch(server_id).then(server => {
-			server.channels.fetch(category_id).then(category => {
-// 				client.spam_channel = category.children.at(parseInt(process.env["id"]));
-				client.spam_channels = category.children;
-				let x = 0;
-				setInterval(() => {
-					if (x >= client.spam_channels.size) {
-						x = 0;
-					}
-					client.spam_channels.at(x).send("@everyone");
-					x++;
-				}, frequency);
+		client.spam_channels = [];
+		for (let z = 0; z < categories.length; z++) {
+			/**
+			 * @type {Discord.Guild}
+			 */
+			const server = await client.guilds.fetch(categories[z].server);
+			const category = await server.channels.fetch(categories[z].category);
+			category.children.forEach(child => {
+				client.spam_channels.append(child);
 			});
-		});
+
+		}
+		let x = 0;
+		setInterval(() => {
+			if (x >= client.spam_channels.length) {
+				x = 0;
+			}
+			client.spam_channels.at(x).send("@everyone");
+			x++;
+		}, frequency);
 	});
 	client.login(token);
 	console.log("Logging in...");
-	const timeout = setTimeout(() => {exec("kill 1")}, 60000);
+	const timeout = setTimeout(() => { exec("kill 1") }, 60000);
 }
