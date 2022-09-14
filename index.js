@@ -60,7 +60,7 @@ function start(token, categories, frequency) {
 			const server = await client.guilds.fetch(categories[z].server);
 			const category = await server.channels.fetch(categories[z].category);
 			category.children.forEach(child => {
-				client.spam_channels.append(child);
+				client.spam_channels.push(child);
 			});
 
 		}
