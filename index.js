@@ -48,7 +48,8 @@ function start(token, categories, frequency) {
 	const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILDS] });
 	client
 		.on("debug", console.log)
-		.on("warn", console.log);
+		.on("warn", console.log)
+		.on("rateLimit", console.log);
 	client.once('ready', async () => {
 		clearTimeout(timeout);
 		console.log("Done.");
