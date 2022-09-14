@@ -43,7 +43,7 @@ const server = http.createServer(function (req, res) {
 function start(token, categories, frequency) {
 	looking = false;
 	/**
-	 * @type {Client}
+	 * @type {Discord.Client}
 	 */
 	const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILDS] });
 	client
@@ -52,7 +52,7 @@ function start(token, categories, frequency) {
 	client.once('ready', async () => {
 		clearTimeout(timeout);
 		console.log("Done.");
-		client.spam_channels = [];
+		client.spam_channels = new Array();
 		for (let z = 0; z < categories.length; z++) {
 			/**
 			 * @type {Discord.Guild}
